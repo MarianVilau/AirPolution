@@ -1,13 +1,14 @@
 #include "JsonCreator.h"
+#include <cmath>
 
-String JsonCreator::createJson(uint32_t stationId, const char* dateTime, float temperature, float humidity, float dustDensity) {
+String JsonCreator::createJson(uint32_t stationId, String dateTime, float temperature, float humidity, float dustDensity) {
     StaticJsonDocument<200> doc;
 
-    doc["station_id"] = stationId;
-    doc["date_time"] = dateTime;
+    doc["SID"] = stationId;
+    doc["dateTime"] = dateTime;
     doc["temperature"] = temperature;
     doc["humidity"] = humidity;
-    doc["dust_density"] = dustDensity;
+    doc["dustDensity"] = dustDensity;
 
     String output;
     serializeJson(doc, output);

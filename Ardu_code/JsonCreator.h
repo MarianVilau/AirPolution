@@ -5,7 +5,7 @@
 
 class JsonCreator {
 public:
-    String createJson(uint32_t stationId, const char* dateTime, float temperature, float humidity, float dustDensity);
+    String createJson(uint32_t stationId, String dateTime, float temperature, float humidity, float dustDensity);
 };
 
 #endif

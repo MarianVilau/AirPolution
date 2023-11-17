@@ -9,6 +9,10 @@
 #define DHT_TYPE    DHT22
 #define DHT_PIN    5
 
+#define RTC_CLOCK_PIN 3
+#define RTC_DATA_PIN  4
+#define RTC_RESET_PIN 2
+
 #define WIFI_SSID "iPhone-Marian"
 #define WIFI_PASS "1a2b3c4d"
 
