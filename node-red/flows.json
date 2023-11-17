@@ -1,0 +1,137 @@
+[
+    {
+        "id": "e39e8c6582c4b886",
+        "type": "tab",
+        "label": "Flow 1",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "4f73623d0922cf0f",
+        "type": "inject",
+        "z": "e39e8c6582c4b886",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 100,
+        "y": 240,
+        "wires": [
+            [
+                "d0a328ad3a9c0cf5",
+                "ad80d7c7b45c32fc"
+            ]
+        ]
+    },
+    {
+        "id": "d0a328ad3a9c0cf5",
+        "type": "http request",
+        "z": "e39e8c6582c4b886",
+        "name": "DATA STORED",
+        "method": "GET",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "http://172.24.0.1:8080/testing.json",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [],
+        "x": 300,
+        "y": 220,
+        "wires": [
+            [
+                "e18bb3a158da4bad"
+            ]
+        ]
+    },
+    {
+        "id": "958af37953325338",
+        "type": "worldmap",
+        "z": "e39e8c6582c4b886",
+        "name": "",
+        "lat": "45.787362",
+        "lon": "24.142372",
+        "zoom": "14",
+        "layer": "OSMG",
+        "cluster": "",
+        "maxage": "",
+        "usermenu": "show",
+        "layers": "show",
+        "panit": "false",
+        "panlock": "false",
+        "zoomlock": "false",
+        "hiderightclick": "true",
+        "coords": "deg",
+        "showgrid": "false",
+        "showruler": "false",
+        "allowFileDrop": "false",
+        "path": "/worldmap",
+        "overlist": "DR,CO,RA,DN",
+        "maplist": "OSMG,OSMC,EsriC,EsriS,UKOS,HB",
+        "mapname": "",
+        "mapurl": "",
+        "mapopt": "",
+        "mapwms": false,
+        "x": 940,
+        "y": 200,
+        "wires": []
+    },
+    {
+        "id": "ad80d7c7b45c32fc",
+        "type": "function",
+        "z": "e39e8c6582c4b886",
+        "name": "Add Legend",
+        "func": "msg.payload.command = {\n  \"legend\": \"<b>Dust Levels Legend:</b><br><div style=\\\"background: linear-gradient(to bottom,#00FF00, #33FF33, #66FF66, #99FF99, #FFFF00, #FFA500, #FF0000); height: 162px; width: 20px; margin-right: 10px; display: inline-block;\\\"></div><div style=\\\"display: inline-block; vertical-align: top;\\\"><div>0</div><div>50</div><div>100</div><div>150</div><div>200</div><div>250</div><div>300+</div></div>\"\n};\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 630,
+        "y": 420,
+        "wires": [
+            [
+                "958af37953325338"
+            ]
+        ]
+    },
+    {
+        "id": "e18bb3a158da4bad",
+        "type": "function",
+        "z": "e39e8c6582c4b886",
+        "name": "Area",
+        "func": "    // Initialize an object to store grouped data\n    var groupedData = {};\n\n    // Iterate over each incoming message\n    for (var i = 0; i < msg.payload.length; i++) {\n        var data = msg.payload[i];\n\n        if (!groupedData[data.ssid]) {\n            // If not, initialize an array for the 'area' property\n            groupedData[data.ssid] = {\n                area: [],\n                dataTime: \"\",\n                temperature: 0,\n                humidity: 0,\n                dustDensity: 0,\n                color: \"\" ,\n                centerLat: 0,\n                centerLon: 0,\n                \"fillOpacity\": 0.8,\n            };\n        }\n\n        // Add the lat and lon to the 'area' array\n        groupedData[data.ssid].area.push([data.lat, data.lon]);\n\n        // Update other properties\n        groupedData[data.ssid].dataTime = data.Data_Time;\n\n        // Add up values for later calculation of mean\n        groupedData[data.ssid].temperature += data.temperature;\n        groupedData[data.ssid].humidity += data.humidity;\n        groupedData[data.ssid].dustDensity += data.dustDensity;\n    }\n\n    // Calculate the mean values\n    for (var ssid in groupedData) {\n        if (groupedData.hasOwnProperty(ssid)) {\n            var numItems = groupedData[ssid].area.length;\n            groupedData[ssid].temperature /= numItems;\n            groupedData[ssid].humidity /= numItems;\n            groupedData[ssid].dustDensity /= numItems;\n\n     \n   var sumLat = 0;\n        var sumLon = 0;\n\n        for (var j = 0; j < numItems; j++) {\n            sumLat += groupedData[ssid].area[j][0];\n            sumLon += groupedData[ssid].area[j][1];\n        }\n\n        groupedData[ssid].centerLat = sumLat / numItems;\n         groupedData[ssid].centerLon = sumLon / numItems;\n\n            // Calculate color based on linear gradient\n            var dustDensity = groupedData[ssid].dustDensity;\n            if (dustDensity < 50) {\n                groupedData[ssid].color = \"#00FF00\";\n            } else if (dustDensity < 100) {\n                groupedData[ssid].color = \"#33FF33\";\n            } else if (dustDensity < 150) {\n                groupedData[ssid].color = \"#66FF66\";\n            } else if (dustDensity < 200) {\n                groupedData[ssid].color = \"#99FF99\";\n            } else if (dustDensity < 250) {\n                groupedData[ssid].color = \"#FFFF00\"; \n            } else if (dustDensity < 300) {\n                groupedData[ssid].color = \"#FFA500\"; \n            } else {\n                groupedData[ssid].color = \"#FF0000\"; \n            }\n        }\n    }\n\n    // Convert the groupedData object into an array\n    var result = [];\n    for (var ssid in groupedData) {\n        if (groupedData.hasOwnProperty(ssid)) {\n            groupedData[ssid].ssid = ssid;\n            result.push(groupedData[ssid]);\n\n       \n  var locationData = {\n    name: ssid,\n    area: groupedData[ssid].area,\n    color: groupedData[ssid].color,\n    fillColor: groupedData[ssid].color,\n    lat: groupedData[ssid].centerLat,\n    lon: groupedData[ssid].centerLon,\n    data: \n    {\n        temperature: groupedData[ssid].temperature,\n        humidity: groupedData[ssid].humidity,\n        dustDensity: groupedData[ssid].dustDensity\n    }\n};\n\n\n              node.send({\n            payload: locationData,\n            topic: \"worldmap\"\n        });\n        }\n    }\n\n    // Update the payload with the result\n    msg.payload = result;\n\n    return msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 570,
+        "y": 180,
+        "wires": [
+            [
+                "958af37953325338",
+                "ad80d7c7b45c32fc"
+            ]
+        ]
+    }
+]
