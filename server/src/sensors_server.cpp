@@ -78,7 +78,9 @@ int SensorsServer::AcceptConnection() {
 void SensorsServer::HandleRequest(int client_descriptor) {
   char buffer[buffer_size_] = {0};
   ssize_t request_size = read(client_descriptor, buffer, buffer_size_);
-  std::cout << "Message: " << buffer << std::endl;
+  std::cout << buffer << std::endl;
+  std::string received_data(buffer, request_size);
+  mongodb_.SendData(received_data);
   close(client_descriptor);
 }
 

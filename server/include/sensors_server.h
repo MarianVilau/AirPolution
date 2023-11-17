@@ -3,6 +3,8 @@
 
 #include <netinet/in.h>
 
+#include "mongodb_handler.h"
+
 namespace Server {
 
 class SensorsServer {
@@ -34,6 +36,8 @@ class SensorsServer {
     int server_descriptor_;
     // Defines the server address.
     struct sockaddr_in server_addr_; 
+    // Defines database connection
+    MongoDBHandler mongodb_;
 };
 
 } // namespace Server

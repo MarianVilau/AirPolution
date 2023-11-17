@@ -1,0 +1,5 @@
+# IDs
+.vscode/
+
+# Build directory
+build/
