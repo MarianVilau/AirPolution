@@ -5,7 +5,7 @@
 
 class JsonCreator {
 public:
-    String createJson(uint32_t stationId, String dateTime, float temperature, float humidity, float dustDensity);
+    String createJson(uint32_t stationId,unsigned int sessionId,String dateTime, float temperature, float humidity, float dustDensity);
 };
 
 #endif

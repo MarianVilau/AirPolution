@@ -16,4 +16,7 @@
 #define WIFI_SSID "iPhone-Marian"
 #define WIFI_PASS "1a2b3c4d"
 
+#define SERVER_DNS "4remote.go.ro"
+#define SERVER_PORT 33245
+
 #endif

@@ -2,7 +2,7 @@
 #define MYWIFICONNECTION_H
 
 #include <Arduino.h>
-#include <WiFiNINA.h>
+#include <WiFi.h>
 
 class MyWifiConnection {
 private:
