@@ -28,6 +28,6 @@ float GP2Y1010AU0F::read() {
   calcVoltage = voMeasured * (this->_VCC / 1024.0);
   Serial.print("Calculate voltage: ");
   Serial.println(calcVoltage);
-  dustDensity = (0.17 * calcVoltage - 0.1) * 10;
+  dustDensity = (0.17 * calcVoltage - 0.1) * 2;
   return dustDensity;
 }

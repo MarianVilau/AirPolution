@@ -26,7 +26,12 @@ void setup() {
     dht.begin();
     myClockTimer.begin();
 
+    Serial.println("Connecting to WiFi");
     WiFi.begin(WIFI_SSID, WIFI_PASS);
+    while (WiFi.status() != WL_CONNECTED) {
+        delay(500);
+        Serial.print(".");
+    }
 }
 
 void loop() {

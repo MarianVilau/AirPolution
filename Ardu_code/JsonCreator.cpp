@@ -12,7 +12,7 @@ String JsonCreator::createJson(uint32_t stationId,unsigned int sessionId, String
     doc["dustDensity"] = dustDensity;
 
     String output;
-    serializeJson(doc, output);
+    serializeJsonPretty(doc, output);
 
     return output;
 }
