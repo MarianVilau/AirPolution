@@ -2,7 +2,7 @@
 #include "JsonCreator.h"
 #include "MyClockTimer.h"
 #include "DataSender.h"
-#include "SessionManager.h"
+#include "InfoPrinter.h"
 
 #include "definitions.h"
 #include <DHT.h>
@@ -14,6 +14,8 @@ JsonCreator jsonCreator;
 MyClockTimer myClockTimer;
 DataSender dataSender;
 SessionManager sessionManager;
+InfoPrinter infoPrinter;
+
 
 float dustDensity = 0;
 float temperature = 0;
@@ -42,6 +44,7 @@ void loop() {
     Serial.print("Dust Density = ");
     Serial.print(dustDensity);
     Serial.println(" ug/m3");
+    infoPrinter.printDustDensity(dustDensity);
 
     Serial.print("Temperature = ");
     Serial.print(temperature);
@@ -51,7 +54,7 @@ void loop() {
     Serial.print(humidity);
     Serial.println(" %\n");
 
-    unsigned int currentSessionId = sessionManager.getSessionId();
+    unsigned int currentSessionId = 1;
     String currentDateTime = myClockTimer.getCurrentDateTime();
     String json = jsonCreator.createJson(STATION_ID, currentSessionId, currentDateTime, temperature, humidity, dustDensity);
     Serial.println(json);
