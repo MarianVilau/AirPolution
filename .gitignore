@@ -1,1 +1,6 @@
-/cmake-build-debug/
+
+# IDs
+.vscode/
+
+# Build directory
+build/
