@@ -15,6 +15,5 @@ include_directories(
     ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_INCLUDEDIR}/bsoncxx/v_noabi
     ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_INCLUDEDIR}/mongocxx/v_noabi
 )
-
 target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE mongo::mongocxx_shared)
 target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE mongo::mongocxx_shared)

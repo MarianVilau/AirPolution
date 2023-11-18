@@ -10,11 +10,9 @@ namespace Server {
 class SensorsServer {
   public:
     // Creates an instance of Server class.
-    SensorsServer(int port_number=33245, int buffer_size=1024);
+    SensorsServer(int port_number=33245);
     // Starts the server processes.
     void Start();
-    // Sets the size of the buffer
-    inline void SetBuffer(int buffer_size) { buffer_size_ = buffer_size; };
   private:
     // Defines the server socket descriptor
     void CreateDescriptor();
@@ -31,7 +29,7 @@ class SensorsServer {
     // Defines the running port of the server.
     int port_;
     // Defines the buffer size
-    int buffer_size_;
+    static constexpr int buffer_size_ = 1024;
     // Defines the server socket descriptor
     int server_descriptor_;
     // Defines the server address.

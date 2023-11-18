@@ -1,7 +1,6 @@
 #include "sensors_server.h"
 
 #include <iostream>
-#include <errno.h>
 #include <stdexcept>
 #include <sys/socket.h>
 #include <unistd.h>
@@ -10,8 +9,8 @@
 
 namespace Server{
 
-SensorsServer::SensorsServer(int port_number, int buffer_size)
-    : port_(port_number), buffer_size_(buffer_size) {
+SensorsServer::SensorsServer(int port_number)
+    : port_(port_number), mongodb_({"mongodb_server", 27017}) {
   try {
     CreateDescriptor();
   } catch (const std::exception& e) {
@@ -76,12 +75,22 @@ int SensorsServer::AcceptConnection() {
 }
 
 void SensorsServer::HandleRequest(int client_descriptor) {
-  char buffer[buffer_size_] = {0};
-  ssize_t request_size = read(client_descriptor, buffer, buffer_size_);
-  std::cout << buffer << std::endl;
-  std::string received_data(buffer, request_size);
-  mongodb_.SendData(received_data);
-  close(client_descriptor);
+  try {
+  while(true) {
+    char buffer[buffer_size_] = {0};
+    ssize_t request_size = read(client_descriptor, buffer, buffer_size_);
+    // Checks if client is connected
+    if (request_size <= 0) {
+      std::cout << "Connection with client closed by the client.";
+      break;
+    }
+    std::cout << buffer << std::endl;
+    std::string received_data(buffer, request_size);
+    mongodb_.SendData(received_data);
+  }
+  } catch (const std::exception& e) {
+    std::cerr << "SensorsServer: " << e.what() << std::endl;
+  }
 }
 
 }
